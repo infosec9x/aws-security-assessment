@@ -19,7 +19,8 @@ def load_prowler(path):
     if not os.path.exists(path):
         print(f"[!] Not found: {path}"); return findings
     with open(path, newline='', encoding='utf-8') as f:
-        for row in csv.DictReader(f):
+        reader = csv.DictReader(f, delimiter=';')
+        for row in reader:
             if row.get("STATUS","").upper() == "FAIL":
                 sev = row.get("SEVERITY","informational").lower()
                 findings.append({
@@ -54,7 +55,7 @@ def load_guardduty(path):
             "severity": sev,
             "resource": finding.get("Resource",{}).get("ResourceType","N/A"),
             "region": finding.get("Region","N/A"),
-            "remediation": "Investigate affected resource and remediate per GuardDuty recommendation",
+            "remediation": "Investigate affected resource per GuardDuty recommendation",
             "status": "OPEN",
             "discovered": datetime.now().strftime("%Y-%m-%d"),
             **SEVERITY_MAP.get(sev, SEVERITY_MAP["informational"])

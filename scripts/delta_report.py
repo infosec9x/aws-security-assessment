@@ -5,9 +5,11 @@ from collections import Counter
 
 def count_fails(path):
     c = Counter()
-    if not os.path.exists(path): return c
+    if not os.path.exists(path):
+        print(f"[!] Not found: {path}")
+        return c
     with open(path, newline='', encoding='utf-8') as f:
-        for row in csv.DictReader(f):
+        for row in csv.DictReader(f, delimiter=';'):
             if row.get("STATUS","").upper() == "FAIL":
                 c[row.get("SEVERITY","informational").lower()] += 1
     return c
